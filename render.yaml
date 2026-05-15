@@ -1,0 +1,16 @@
+﻿services:
+  - type: web
+    name: aoraflow-ai-bot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: TELEGRAM_TOKEN
+        sync: false
+      - key: WEBHOOK_URL
+        sync: false
+      - key: ADMIN_ID
+        sync: false
+      - key: OLLAMA_URL
+        value: http://localhost:11434  # سيتم استبداله لاحقاً بـ ngrok أو API خارجي
+    plan: free

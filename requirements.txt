@@ -1,0 +1,11 @@
+﻿python-telegram-bot==20.7
+flask
+gunicorn
+requests
+beautifulsoup4
+duckduckgo-search
+reportlab
+fpdf
+pandas
+matplotlib
+openpyxl
