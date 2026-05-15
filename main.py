@@ -1,13 +1,15 @@
-﻿# main.py - نقطة الدخول للنشر على Render.com
+# main.py - لـ Render (webhook باستخدام python-telegram-bot)
 import os
-import asyncio
+import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from graph import run_supervisor
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-WEBHOOK_URL = os.environ.get("WEBHOOK_URL")  # مثل: https://aoraflow.onrender.com
+WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 8080))
+
+logging.basicConfig(level=logging.INFO)
 
 async def start(update: Update, context):
     await update.message.reply_text("👋 مرحباً بك في AoraFlow AI!\nأرسل /help للمساعدة.")
@@ -23,7 +25,7 @@ async def help_command(update: Update, context):
 • ملف CSV/Excel للتحليل
 • `أنشئ لي بوت` لإنشاء بوت جديد
 • `استشارة: ...` للحصول على استشارة
-• `ابحث عن ...` للبحث (تجريبي)
+• `ابحث عن ...` للبحث
 • `/pay` لعرض طرق الدفع"""
     await update.message.reply_text(help_text)
 
@@ -59,14 +61,7 @@ def main():
     app.add_handler(CommandHandler("status", status))
     app.add_handler(CommandHandler("agents", agents))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-    # استخدام webhook بدلاً من polling (لـ Render)
-    app.run_webhook(
-        listen="0.0.0.0",
-        port=PORT,
-        url_path=TELEGRAM_TOKEN,
-        webhook_url=f"{WEBHOOK_URL}/{TELEGRAM_TOKEN}"
-    )
+    app.run_webhook(listen="0.0.0.0", port=PORT, url_path=TELEGRAM_TOKEN, webhook_url=f"{WEBHOOK_URL}/{TELEGRAM_TOKEN}")
 
 if __name__ == "__main__":
     main()
